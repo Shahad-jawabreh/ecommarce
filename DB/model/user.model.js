@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+import mongoose , { Schema ,model} from "mongoose";
 
-const userSchema = mongoose.Schema({
+const userSchema =new Schema({
     userName : {
         type : String,
         required : true
@@ -21,6 +21,12 @@ const userSchema = mongoose.Schema({
     image : {
         type : Object
     },
+    phone : {
+        type : String
+    },
+    address : {
+        type : String
+    },
     confirmEmail : {
         type : Boolean,
         default : false
@@ -36,5 +42,5 @@ const userSchema = mongoose.Schema({
         enum : ['user', 'admin']
     }
 },{timestamps : true})
-const userModel = mongoose.model('User',userSchema)
+const userModel = model('User',userSchema)
 export default userModel

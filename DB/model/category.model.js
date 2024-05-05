@@ -1,12 +1,14 @@
-import mongoose, { Types } from "mongoose";
+import mongoose, { Types,model,Schema } from "mongoose";
 
-const categorySchema = mongoose.Schema({
+const categorySchema = new Schema({
     name : {
         type : String , 
-        required : true
+        required : true,
+        unique : true
     },
     image : {
-        type : Object 
+        type : Object ,
+        required : true
     },
     slug : {
         type : String ,
@@ -19,14 +21,12 @@ const categorySchema = mongoose.Schema({
     },
     createdBy : {
         type : Types.ObjectId ,
-        ref : 'user',
-        required : true
+        ref : 'user'
     },
     updatedBy : {
         type : Types.ObjectId ,
-        ref : 'user',
-        required : true
+        ref : 'user'
     },
 },{timestamps : true})
-const categoryModel = mongoose.model('User',categorySchema)
+const categoryModel = model('category',categorySchema)
 export default categoryModel

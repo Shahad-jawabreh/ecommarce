@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 const connection=()=>{
-mongoose.connect(`mongodb+srv://${process.env.DBUserName}:${process.env.DBPassword}@cluster0.rehgmb9.mongodb.net/`)
+mongoose.connect(`mongodb+srv://${process.env.DBUserName}:${process.env.DBPassword}@cluster0.rehgmb9.mongodb.net/ecommarse`)
 .then(()=>{
     console.log('connct to DB');
 }).catch((error)=>{
