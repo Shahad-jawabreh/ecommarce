@@ -1,12 +1,16 @@
 import categoryModel from "../../../DB/model/category.model.js"
+import subCategoryModel from "../../../DB/model/subcategory.model.js"
 import userModel from "../../../DB/model/user.model.js"
 import cloudinary from "../../utls/uploadFile/cloudinary.js"
 import slugify from 'slugify'
 
 export const getAllCategory =async (req,res,next)=>{
-
-    const category = await categoryModel.find({}).populate([{path : 'createdBy', select : "userName"},{path : 'subcategory'}])
+  console.log(req.user)
+  if(req.user.role == 'admin'){
+    const category = await subCategoryModel.find({})
     return res.status(200).json({category})
+  }
+  return res.status(400).json({massege : "you cant access this page"})
  }
 
  export const getActiveCategory =async (req,res,next)=>{
@@ -31,7 +35,7 @@ export const getAllCategory =async (req,res,next)=>{
        category.slug=  slugify(req.body.name, '-') ;
        category.updatedBy = req.user._id;
        if(req.file) {
-        const {secure_url,public_id} = await cloudinary.uploader.upload(req.file.path,{folder:`${process.env.appname+'/Category'}`})
+        const {secure_url,public_id} = await cloudinary.uploader.upload(req.file.path,{folder:`${process.env.appname+'/subcategory'}`})
         category.image = {secure_url,public_id}
         await cloudinary.uploader.destroy(category.image.public_id)
         category.image = {secure_url,public_id}
@@ -52,20 +56,26 @@ export const getAllCategory =async (req,res,next)=>{
   return res.status(200).json({massege : "delete successfully"})
  }
  export const createCategory =async (req,res,next)=>{
+  const {_id} = req.params  ;
+  console.log(req.params)
+  if(! await categoryModel.findById(_id)) {
+    return res.json({massege : "this category not found"})
+  }
+  req.body.categoryId = _id ;
       const name = req.body.name.toLowerCase()
-      const findCategory = await categoryModel.find({name})
+      const findCategory = await subCategoryModel.find({name})
       if(findCategory.length>0){
         return res.status(409).json({massege : "this name is already exist"})
       }
       else {
-        const {secure_url,public_id} = await cloudinary.uploader.upload(req.file.path,{folder:`${process.env.appname+'/Category'}`})
+        const {secure_url,public_id} = await cloudinary.uploader.upload(req.file.path,{folder:`${process.env.appname+'/subcategory'}`})
       
           req.body.slug = slugify(name, '-')
           req.body.image = {secure_url,public_id};
           req.body.name= name ;
           req.body.createdBy= req.user._id
           req.body.updatedBy= req.user._id
-          const category= await categoryModel.create(req.body)
+          const category= await subCategoryModel.create(req.body)
           return res.json({massege : "added successfully" , category})
       }
  }

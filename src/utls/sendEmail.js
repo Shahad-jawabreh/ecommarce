@@ -1,10 +1,8 @@
 import nodemailer from "nodemailer" 
 
-const SendEmail = async(email,req,token) =>{
+const SendEmail = async(to,subject,html) =>{
     const transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 587,
-        secure: false, 
+        service : 'gmail',
         auth: {
           user: process.env.emailSender,
           pass: process.env.emailPassword,
@@ -12,11 +10,10 @@ const SendEmail = async(email,req,token) =>{
       });
 
     const info = await transporter.sendMail({
-          from: 'welcom to our ecommarce', // sender address
-          to: email ,
-          subject: "Hello ✔", // Subject line
-          text: "Hello world?", // plain text body
-          html:`<a href='${req.protocol}://${req.headers.host}/user/confirmemail/${token}'>confirm email</a>`, // html body
+          from: `${process.env.emailSender}`, // sender address
+          to ,
+          subject,
+          html
      });
          
 }

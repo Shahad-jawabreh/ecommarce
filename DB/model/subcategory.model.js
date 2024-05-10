@@ -1,6 +1,11 @@
 import mongoose, { Types,model,Schema } from "mongoose";
 
-const categorySchema = new Schema({
+const subCategorySchema = new Schema({
+    categoryId : {
+       type : Types.ObjectId ,
+       required : true , 
+       ref : 'category'
+    },
     name : {
         type : String , 
         required : true,
@@ -21,22 +26,13 @@ const categorySchema = new Schema({
     },
     createdBy : {
         type : Types.ObjectId ,
-        ref : 'User'
+        ref : 'user'
     },
     updatedBy : {
         type : Types.ObjectId ,
-        ref : 'User'
+        ref : 'user'
     },
-},{timestamps : true,
-    toJSON : {virtuals : true},
-    toObject : {virtuals : true}
-}
-)
+},{timestamps : true})
 
-categorySchema.virtual('subcategory',{
-    localField : "_id" ,
-    foreignField : "categoryId",
-    ref : "subcategory"
-})
-const categoryModel = model('category',categorySchema)
-export default categoryModel
+const subCategoryModel = model('subcategory',subCategorySchema)
+export default subCategoryModel

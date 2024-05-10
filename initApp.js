@@ -1,6 +1,7 @@
 import connection from './DB/connection.js';
 import userRouter from './src/modules/user/user.router.js'
 import categoryRouter from './src/modules/category/category.router.js'
+import subCategory from './src/modules/subcategory/subCategory.router.js'
 import authRouter from './src/modules/auth/auth.router.js'
 import cors from 'cors'
 const initApp=(express,app)=>{

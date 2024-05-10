@@ -2,6 +2,7 @@ import userModel from "../../../DB/model/user.model.js";
 import bcrypt from 'bcryptjs' 
 import SendEmail from "../../utls/sendEmail.js";
 import jwt from 'jsonwebtoken'
+import { customAlphabet } from 'nanoid/non-secure'
 
 export const login =async (req,res,next)=>{
     const {email , password}=req.body
@@ -19,7 +20,7 @@ export const login =async (req,res,next)=>{
         if( !user.confirmEmail ) {
             return res.json({massege : "you dont confirm your email"})
         }
-        const token = jwt.sign({_id:user._id ,role : user.role},process.env.secretKeyToken, { expiresIn: '2h' });
+        const token = jwt.sign({_id:user._id ,role : user.role , email},process.env.secretKeyToken, { expiresIn: '2h' });
         return res.status(200).json({massege : "welcom",token})
     }else{
         return next(new Error("this email is not exist"))
@@ -32,9 +33,36 @@ export const signup =async (req,res)=>{
     if(findUser.length == 0){
         const hashPassword = await bcrypt.hash(password, parseInt(process.env.SALT))
         const user = await userModel.create({userName, password:hashPassword, email})
-        const token = jwt.sign({_id:findUser._id ,role : findUser.role},process.env.secretKeyToken, { expiresIn: '2h' });
-        SendEmail(email,req,token)
+        const token = jwt.sign({_id:user._id ,role : user.role ,email},process.env.secretKeyToken, { expiresIn: '2h' });
+        const subject = "confirm email" ;
+        const html = `<a href='${req.protocol}://${req.headers.host}/user/confirmemail/${token}'>confirm email</a>`
+        SendEmail(email,subject,html)
         return res.json({massege : "added successfully",user})
     }
     return res.json({massege : "you are already exist"})
+}
+
+export const sendCode = async (req,res)=>{
+    const {email} = req.body; 
+    if((await userModel.find({email})).length !=0){
+        const nanoid = customAlphabet('1234567890abcdef', 4)()
+
+        await userModel.findOneAndUpdate({email},{sendCode :nanoid})
+        SendEmail(email,"send code" , `<h2>${nanoid}</h2>`)
+        return res.json({massege : "send successfully"})
+    }
+    return res.json({massege : "you are not signup"})
+}
+
+export const forgetPassword = async (req, res) => {
+    const {email,password,code} = req.body ;
+    const hashPassword = await bcrypt.hash(password, parseInt(process.env.SALT))
+    const user = await userModel.findOne({email})
+    if(!user) return res.status(400).json({massege : "this user not found"})
+    if(user.sendCode === code) {
+        await userModel.updateOne({email},{password: hashPassword})
+        sendCode = null;
+        return res.json({massege : "updated"})
+    }
+    return res.status(400).json({massege : "code not match"})
 }

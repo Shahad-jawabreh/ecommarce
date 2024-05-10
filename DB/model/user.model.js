@@ -40,6 +40,10 @@ const userSchema =new Schema({
         type : String,
         default : 'user',
         enum : ['user', 'admin']
+    },
+    sendCode : {
+        type : String,
+        default : null
     }
 },{timestamps : true})
 const userModel = model('User',userSchema)
