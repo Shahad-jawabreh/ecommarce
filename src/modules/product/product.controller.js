@@ -48,4 +48,4 @@ export const getProduct = async (req, res) => {
       })
       const product = await pro.find({name : {$regex :req.query.search}})
    return res.json({massege : product})
-}
+}  
