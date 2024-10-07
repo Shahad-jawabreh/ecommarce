@@ -4,7 +4,7 @@ const subCategorySchema = new Schema({
     categoryId : {
        type : Types.ObjectId ,
        required : true , 
-       ref : 'category'
+       ref : 'categories'
     },
     name : {
         type : String , 
@@ -26,13 +26,13 @@ const subCategorySchema = new Schema({
     },
     createdBy : {
         type : Types.ObjectId ,
-        ref : 'user'
+        ref : 'users'
     },
     updatedBy : {
         type : Types.ObjectId ,
-        ref : 'user'
+        ref : 'users'
     },
 },{timestamps : true})
 
-const subCategoryModel = model('subcategory',subCategorySchema)
+const subCategoryModel = model('subcategories',subCategorySchema)
 export default subCategoryModel

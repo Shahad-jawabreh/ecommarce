@@ -8,7 +8,11 @@ export const getAllCategory =async (req,res,next)=>{
     const category = await categoryModel.find({}).populate([{path : 'createdBy', select : "userName"},{path : 'subcategory'}])
     return res.status(200).json({category})
  }
+ export const getDetails =async (req,res,next)=>{
 
+  const category = await categoryModel.findById(req.params.id)
+  return res.status(200).json({category})
+}
  export const getActiveCategory =async (req,res,next)=>{
     const category = await categoryModel.find({status:'active'}).select("name image.secure_url")
     return res.status(200).json({category})
@@ -51,6 +55,7 @@ export const getAllCategory =async (req,res,next)=>{
   await cloudinary.uploader.destroy(destroyCat.image.public_id)
   return res.status(200).json({massege : "delete successfully"})
  }
+ 
  export const createCategory =async (req,res,next)=>{
       const name = req.body.name.toLowerCase()
       const findCategory = await categoryModel.find({name})

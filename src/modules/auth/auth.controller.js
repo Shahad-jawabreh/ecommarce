@@ -23,7 +23,7 @@ export const login =async (req,res,next)=>{
         const token = jwt.sign({_id:user._id ,role : user.role , email},process.env.secretKeyToken, { expiresIn: '2h' });
         return res.status(200).json({massege : "welcom",token})
     }else{
-        return next(new Error("this email is not exist"))
+        return res.json({massege : "this email is not exist"})
     }
 }
 
@@ -59,10 +59,18 @@ export const forgetPassword = async (req, res) => {
     const hashPassword = await bcrypt.hash(password, parseInt(process.env.SALT))
     const user = await userModel.findOne({email})
     if(!user) return res.status(400).json({massege : "this user not found"})
-    if(user.sendCode === code) {
-        await userModel.updateOne({email},{password: hashPassword})
-        sendCode = null;
-        return res.json({massege : "updated"})
-    }
+    
+        if (user.sendCode === code) {
+            // Update both the password and the sendCode fields in the database
+            await userModel.updateOne(
+                { email }, 
+                { 
+                    password: hashPassword,
+                    sendCode: null  // Clear sendCode after successful update
+                }
+            );
+            
+            return res.json({ message: "Password updated successfully" });
+        }
     return res.status(400).json({massege : "code not match"})
 }

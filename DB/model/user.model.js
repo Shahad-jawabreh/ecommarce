@@ -39,12 +39,12 @@ const userSchema =new Schema({
     role :{
         type : String,
         default : 'user',
-        enum : ['user', 'admin']
+        enum : ['user', 'admin','delivery']
     },
     sendCode : {
         type : String,
         default : null
     }
 },{timestamps : true})
-const userModel = model('User',userSchema)
+const userModel = model('users',userSchema)
 export default userModel

@@ -4,17 +4,13 @@ import userModel from "../../../DB/model/user.model.js"
 import cloudinary from "../../utls/uploadFile/cloudinary.js"
 import slugify from 'slugify'
 
-export const getAllCategory =async (req,res,next)=>{
-  console.log(req.user)
-  if(req.user.role == 'admin'){
+export const getAllCategory =async (req,res,next)=>{ 
     const category = await subCategoryModel.find({})
     return res.status(200).json({category})
-  }
-  return res.status(400).json({massege : "you cant access this page"})
  }
 
  export const getActiveCategory =async (req,res,next)=>{
-    const category = await categoryModel.find({status:'active'}).select("name image.secure_url")
+    const category = await subCategoryModel.find({status:'active'}).select("name image.secure_url")
     return res.status(200).json({category})
  
  }
@@ -27,7 +23,7 @@ export const getAllCategory =async (req,res,next)=>{
        if(!category) {
           return next(new Error("this category is not exist"))
        } 
-       if(await categoryModel.findOne({name :req.body.name , _id :{$ne:_id} })) {
+       if(await subCategoryModel.findOne({name :req.body.name , _id :{$ne:_id} })) {
          return res.status(400).json({massege : "this category is already exist" }) ;
        }
        category.name= req.body.name ;

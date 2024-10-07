@@ -14,7 +14,6 @@ const authorization = (roles=[])=>{
                 const user = await userModel.findById({_id : decode._id}) ;
                 if(user){
                     req.user= decode;
-                    console.log(roles)
                     if(roles.includes(user.role)) {
                         return next();
                     }else {
