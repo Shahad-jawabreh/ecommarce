@@ -9,6 +9,7 @@ import couponRouter from './src/modules/coupon/coupon.router.js'
 import orderRouter from './src/modules/order/order.router.js'
 import cors from 'cors'
 const initApp=(express,app)=>{
+    
     app.use(cors());
     app.use(express.json());
     connection();

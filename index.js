@@ -3,7 +3,6 @@ import initApp from './initApp.js';
 import 'dotenv/config'
 const app = express();
 
-
 initApp(express,app);
 
 const PORT= process.env.PORT || 4000;
